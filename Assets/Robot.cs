@@ -11,11 +11,12 @@ public class Robot : MonoBehaviour {
 	public GameObject hugRightFinger;
 	public GameObject hugLeftFinger;
 	public GameObject hugBase;
+	public GameObject hugBackboard;
 
 	private double upperRailMaxYIncrease = 16.95;
 	private double upperRailMinY;
 
-	private double hugMaxYIncrease =  14.47;
+	private double hugMaxYIncrease =  16.43;
 	private double hugMinY;
 
 	private float originalBaseX;
@@ -25,6 +26,9 @@ public class Robot : MonoBehaviour {
 	private float originalLeftFingerZ;
 
 	private float fingerOffset = 7.84f;
+
+	private float originalBackboardX;
+	private float backboardMaxXIncrease = 7.38f;
 	// Use this for initialization
 	void Start () {
 		upperRailMinY = (double)upperRail.transform.localPosition.y;
@@ -32,6 +36,7 @@ public class Robot : MonoBehaviour {
 		originalBaseX = hugBase.transform.localPosition.x;
 		originalRightFingerZ = hugRightFinger.transform.localPosition.z;
 		originalLeftFingerZ = hugLeftFinger.transform.localPosition.z;
+		originalBackboardX = hugBackboard.transform.localPosition.x;
 	}
 	
 	// Update is called once per frame
@@ -101,6 +106,19 @@ public class Robot : MonoBehaviour {
 					new Vector3 (hugRightFinger.transform.localPosition.x,	
 					hugRightFinger.transform.localPosition.y,
 					originalLeftFingerZ);
+			}
+
+			float backboardSpeed = 0.1f;
+			if (Input.GetKey (KeyCode.Keypad3) && hugBackboard.transform.localPosition.x > originalBackboardX) {
+				hugBackboard.transform.localPosition = 
+					new Vector3 (hugBackboard.transform.localPosition.x - backboardSpeed,
+						hugBackboard.transform.localPosition.y,
+						hugBackboard.transform.localPosition.z);
+			} else if (Input.GetKey (KeyCode.Keypad6) && hugBackboard.transform.localPosition.x < originalBackboardX + backboardMaxXIncrease) {
+				hugBackboard.transform.localPosition = 
+					new Vector3 (hugBackboard.transform.localPosition.x + backboardSpeed,
+						hugBackboard.transform.localPosition.y,
+						hugBackboard.transform.localPosition.z);
 			}
 		}
 		
