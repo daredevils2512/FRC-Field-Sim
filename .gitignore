@@ -1,7 +1,4 @@
 Temp/
-Library/ShaderCache/
 Library/metadata/
 Library/PlayerDataCache/
-Assembly-CSharp.csproj
-frc garbage.userprefs
-frc garbage.sln
+Library/ShaderCache/
