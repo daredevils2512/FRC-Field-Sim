@@ -91,10 +91,13 @@ public class PlayerController : MonoBehaviour {
 			        pickedUpObject=null;
 	        	}
 	        }
+
 		}else{
 			controller.SimpleMove(Vector3.zero);
 		}
-		pitch += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivity;
+
+		if(!robotCamera){
+			pitch += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivity;
 			yaw += Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivity;
 			pitch = Mathf.Clamp(pitch,-90.0f,90.0f);
 			//cam.transform.localEulerAngles = new Vector3(-pitch,0,0);
@@ -102,8 +105,6 @@ public class PlayerController : MonoBehaviour {
 			cam.transform.localEulerAngles = new Vector3(-pitch,0.0f,0.0f);
 
 			transform.localEulerAngles = new Vector3(0.0f,yaw-216,0.0f);
-		if(!robotCamera){
-			
 			robotCam.enabled = false;
 			cam.enabled = true;
 			
