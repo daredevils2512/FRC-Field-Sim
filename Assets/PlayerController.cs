@@ -24,15 +24,23 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		controller = GetComponent<CharacterController>();
-		Cursor.lockState = CursorLockMode.Locked;
+		//Cursor.lockState = CursorLockMode.Locked;
 	}
+
+	private bool hasDone = false;
 	
 	// Update is called once per frame
 	void Update () {
-		Cursor.lockState = CursorLockMode.Locked;
+		//Cursor.lockState = CursorLockMode.Locked;
 		float mouseSensitivity = 75.0f;
 		float z = Input.GetAxis("Vertical") /** Time.deltaTime*/ * 5.0f;
 		float x = Input.GetAxis("Horizontal") /** Time.deltaTime*/ * 5.0f;
+		if(float.IsNaN(z)){
+			Debug.LogError("Z NaN");
+		}
+		if(float.IsNaN(x)){
+			Debug.LogError("X NaN");
+		}
 		if(Input.GetKeyDown(KeyCode.Tab)){
 			robotControl = !robotControl;
 		}
@@ -49,11 +57,18 @@ public class PlayerController : MonoBehaviour {
 		
 
 		if (!robotControl) {
-			float whee = 0;
+			float whee = 0f;
 			if (Input.GetKey (KeyCode.Space)) {
-				whee = 2;
+				whee = 2f;
 			}	
-			controller.SimpleMove(transform.TransformDirection(new Vector3(x,whee,z)));
+			if(!hasDone){
+				controller.SimpleMove(Vector3.zero);
+				hasDone = true;
+			}else{
+				Vector3 direction = transform.TransformDirection(new Vector3(x,whee,z));
+				Debug.LogError(direction.x + "," + direction.y + "," + direction.z);
+				controller.SimpleMove(direction);
+			}
 			if(Input.GetMouseButton(0)){
 				if(pickedUpObject == null && Physics.Raycast(cam.transform.position,cam.transform.forward,out hit,100)){
 	        
@@ -65,7 +80,7 @@ public class PlayerController : MonoBehaviour {
 			            pickedUpObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 		            }
 		        }
-			} else { //i think a regular else statement is fine
+			} else {
 				if(pickedUpObject != null){
 					Vector3 tempPos = pickedUpObject.transform.position;
 					Quaternion tempRot = pickedUpObject.transform.rotation;
@@ -77,11 +92,9 @@ public class PlayerController : MonoBehaviour {
 	        	}
 	        }
 		}else{
-			controller.SimpleMove(transform.TransformDirection(new Vector3(0,0,0)));
+			controller.SimpleMove(Vector3.zero);
 		}
-		
-		if(!robotCamera){
-			pitch += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivity;
+		pitch += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivity;
 			yaw += Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivity;
 			pitch = Mathf.Clamp(pitch,-90.0f,90.0f);
 			//cam.transform.localEulerAngles = new Vector3(-pitch,0,0);
@@ -89,6 +102,8 @@ public class PlayerController : MonoBehaviour {
 			cam.transform.localEulerAngles = new Vector3(-pitch,0.0f,0.0f);
 
 			transform.localEulerAngles = new Vector3(0.0f,yaw-216,0.0f);
+		if(!robotCamera){
+			
 			robotCam.enabled = false;
 			cam.enabled = true;
 			
