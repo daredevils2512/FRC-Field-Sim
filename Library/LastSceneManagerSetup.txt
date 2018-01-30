@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/frc field.unity
-  isLoaded: 1
-  isActive: 1
