@@ -36,12 +36,7 @@ public class PlayerController : MonoBehaviour {
 		float mouseSensitivity = 75.0f;
 		float z = Input.GetAxis("Vertical") /** Time.deltaTime*/ * 5.0f;
 		float x = Input.GetAxis("Horizontal") /** Time.deltaTime*/ * 5.0f;
-		if(float.IsNaN(z)){
-			Debug.LogError("Z NaN");
-		}
-		if(float.IsNaN(x)){
-			Debug.LogError("X NaN");
-		}
+
 		if(Input.GetKeyDown(KeyCode.Tab)){
 			robotControl = !robotControl;
 		}
@@ -68,7 +63,6 @@ public class PlayerController : MonoBehaviour {
 				hasDone = true;
 			}else{
 				Vector3 direction = transform.TransformDirection(new Vector3(x,whee,z));
-				Debug.LogError(direction.x + "," + direction.y + "," + direction.z);
 				controller.SimpleMove(direction);
 			}
 			if(Input.GetMouseButton(0)){
