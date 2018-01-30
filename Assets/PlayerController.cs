@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-	
-	public Camera cam;
 
-	public Camera robotCam;
-
+	public Camera[] cameras;
+	private int cameraIndex = 0;
 	private CharacterController controller;
+
+	private float startingRot;
 
 	public float yaw = 0.0f;
 	public float pitch = 0.0f;
@@ -24,14 +24,15 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		controller = GetComponent<CharacterController>();
-		//Cursor.lockState = CursorLockMode.Locked;
+		startingRot = transform.localEulerAngles.y;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	private bool hasDone = false;
 	
 	// Update is called once per frame
 	void Update () {
-		//Cursor.lockState = CursorLockMode.Locked;
+		Cursor.lockState = CursorLockMode.Locked;
 		float mouseSensitivity = 75.0f;
 		float z = Input.GetAxis("Vertical") /** Time.deltaTime*/ * 5.0f;
 		float x = Input.GetAxis("Horizontal") /** Time.deltaTime*/ * 5.0f;
@@ -46,7 +47,8 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		if(Input.GetKeyDown(KeyCode.C)){
-			robotCamera = !robotCamera;
+			cameraIndex++;
+			cameraIndex = cameraIndex % cameras.Length;
 		}
 		
 		if(Input.GetKey(KeyCode.LeftControl)){
@@ -70,6 +72,7 @@ public class PlayerController : MonoBehaviour {
 				controller.SimpleMove(direction);
 			}
 			if(Input.GetMouseButton(0)){
+				Camera cam = cameras[0];
 				if(pickedUpObject == null && Physics.Raycast(cam.transform.position,cam.transform.forward,out hit,100)){
 	        
 		        	if(hit.collider.gameObject.tag=="Power Cube"){ //add collider reference otherwise you can't access gameObject!
@@ -96,22 +99,20 @@ public class PlayerController : MonoBehaviour {
 			controller.SimpleMove(Vector3.zero);
 		}
 
-		if(!robotCamera){
+		if(cameraIndex == 0){
 			pitch += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivity;
 			yaw += Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivity;
 			pitch = Mathf.Clamp(pitch,-90.0f,90.0f);
-			//cam.transform.localEulerAngles = new Vector3(-pitch,0,0);
-			
-			cam.transform.localEulerAngles = new Vector3(-pitch,0.0f,0.0f);
+			//cam.transform.localEulerAngles = new Vector3(-pitch,0,0)
+			cameras[0].transform.localEulerAngles = new Vector3(-pitch,0.0f,0.0f);
 
-			transform.localEulerAngles = new Vector3(0.0f,yaw-216,0.0f);
-			robotCam.enabled = false;
-			cam.enabled = true;
+			transform.localEulerAngles = new Vector3(0.0f,yaw+startingRot,0.0f);
 			
-		}else{
-			robotCam.enabled = true;
-			cam.enabled = false;
-		}	
+		}
+
+		for(var i = 0; i < cameras.Length; i++){
+			cameras[i].enabled = (i == cameraIndex);
+		}
 
 		
 	    
