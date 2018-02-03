@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehavior {
+public class PlayerController : MonoBehaviour {
 
 	public Camera[] cameras;
 	private int cameraIndex = 0;
@@ -33,9 +33,6 @@ public class PlayerController : NetworkBehavior {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!isLocalPlayer){
-			return;
-		}
 		Cursor.lockState = CursorLockMode.Locked;
 		float mouseSensitivity = 75.0f;
 		float z = Input.GetAxis("Vertical") /** Time.deltaTime*/ * 5.0f;

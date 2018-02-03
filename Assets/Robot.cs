@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Robot : NetworkBehavior {
+public class Robot : MonoBehaviour {
 	public WheelCollider[] leftWheels;
 	public WheelCollider[] rightWheels;
 	public PlayerController player;
@@ -34,6 +34,7 @@ public class Robot : NetworkBehavior {
 
 	private float originalBackboardX;
 	private float backboardMaxXIncrease = 0.68f;
+	private Vector3 startMeasure;
 	// Use this for initialization
 	void Start () {
 		midRailMinY = (double)midRail.transform.localPosition.y;
@@ -42,13 +43,11 @@ public class Robot : NetworkBehavior {
 		originalRightFingerZ = hugRightFinger.transform.localPosition.z;
 		originalLeftFingerZ = hugLeftFinger.transform.localPosition.z;
 		originalBackboardX = hugBackboard.transform.localPosition.x;
+		startMeasure = transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (!isLocalPlayer){
-			return;
-		}
 		float z = Input.GetAxis("Vertical");
 		float x = Input.GetAxis ("Horizontal");
 		float left = 0;
@@ -125,7 +124,9 @@ public class Robot : NetworkBehavior {
 						hugBase.transform.localPosition.z);
 				
 			}
-
+			if (Input.GetKey (KeyCode.KeypadEnter)) {
+				startMeasure = transform.position;
+			}
 			if (Input.GetKey (KeyCode.KeypadPeriod)) {
 				
 				hugRightFinger.transform.localPosition = 
@@ -179,5 +180,8 @@ public class Robot : NetworkBehavior {
 			rightWheels [i].motorTorque = right;
 			rightWheels [i].gameObject.transform.Rotate (0,rightWheels [i].rpm / 60 * 360 * Time.deltaTime, 0);
 		}
+	}
+	void OnGUI() {
+		GUI.Label (new Rect (10, 10, 1000, 20), "DIST: " + Mathf.RoundToInt(Vector3.Distance (transform.position, startMeasure)*39.3701f) + "in" );
 	}
 }
