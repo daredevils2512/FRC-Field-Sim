@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Robot : MonoBehaviour {
+public class Robot : NetworkBehavior {
 	public WheelCollider[] leftWheels;
 	public WheelCollider[] rightWheels;
 	public PlayerController player;
@@ -45,6 +46,9 @@ public class Robot : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (!isLocalPlayer){
+			return;
+		}
 		float z = Input.GetAxis("Vertical");
 		float x = Input.GetAxis ("Horizontal");
 		float left = 0;
