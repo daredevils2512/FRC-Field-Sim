@@ -42,7 +42,7 @@ public class RobotNetworked : NetworkBehaviour {
 	private Vector3 startMeasure;
 	// Use this for initialization
 	void Start () {
-		if(!isLocalPlayer) return;
+		//if(!isLocalPlayer) return;
 		midRailMinY = (double)midRail.transform.localPosition.y;
 		hugMinY = (double)hug.transform.localPosition.y-1.1;
 		originalBaseX = hugBase.transform.localPosition.x;
@@ -54,9 +54,9 @@ public class RobotNetworked : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(!isLocalPlayer) return;
-		float z = Input.GetAxis("Vertical");
-		float x = Input.GetAxis ("Horizontal");
+		//if(!isLocalPlayer) return;
+		float z = player.inputZ;
+		float x = player.inputX;
 		float left = 0;
 		float right = 0;
 		float speed = 10;

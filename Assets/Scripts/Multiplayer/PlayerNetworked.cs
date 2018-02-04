@@ -6,7 +6,11 @@ using UnityEngine.Networking;
 public class PlayerNetworked : NetworkBehaviour {
 
 	public Transform robotPrefab;
-	private RobotNetworked robot;
+
+	public RobotNetworked robot;
+
+	public RobotNetworkManager networkManager;
+
 	public Camera[] cameras;
 	private int cameraIndex = 0;
 	private CharacterController controller;
@@ -23,7 +27,8 @@ public class PlayerNetworked : NetworkBehaviour {
 
 	public bool robotCamera = false;
 
-
+	public float inputZ = 0.0f;
+	public float inputX = 0.0f;
 	// Use this for initialization
 	void Start () {
 		if (!isLocalPlayer)
@@ -31,11 +36,12 @@ public class PlayerNetworked : NetworkBehaviour {
 		controller = GetComponent<CharacterController>();
 		startingRot = transform.localEulerAngles.y;
 		Cursor.lockState = CursorLockMode.Locked;
-		robot = Instantiate (robotPrefab, transform.TransformDirection(new Vector3 (0f, 0.17f, 3f)), Quaternion.identity).GetComponent<RobotNetworked>();
+		robot = Instantiate (this.robotPrefab, this.transform.TransformDirection(new Vector3 (0f, 0.17f, 3f)), Quaternion.identity).GetComponent<RobotNetworked>();
 		robot.player = this;
 		cameras [1] = robot.cam1;
 		cameras [2] = robot.cam2;
 		cameras [3] = robot.cam3;
+
 
 	}
 
@@ -43,12 +49,18 @@ public class PlayerNetworked : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (!isLocalPlayer)
+		if (!isLocalPlayer) {
+			for(var i = 0; i < cameras.Length; i++){
+				cameras[i].enabled = false;
+			}
 			return;
+		}
 		Cursor.lockState = CursorLockMode.Locked;
 		float mouseSensitivity = 75.0f;
-		float z = Input.GetAxis("Vertical") /** Time.deltaTime*/ * 5.0f;
-		float x = Input.GetAxis("Horizontal") /** Time.deltaTime*/ * 5.0f;
+		inputZ = Input.GetAxis ("Vertical");
+		inputX = Input.GetAxis ("Horizontal");
+		float z = inputZ /** Time.deltaTime*/ * 5.0f;
+		float x = inputX /** Time.deltaTime*/ * 5.0f;
 
 		if(Input.GetKeyDown(KeyCode.Tab)){
 			robotControl = !robotControl;
